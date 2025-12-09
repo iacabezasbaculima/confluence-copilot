@@ -1,0 +1,19 @@
+services:
+  pgvector:
+    image: pgvector/pgvector:pg17
+    restart: unless-stopped
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-pgvector}
+      POSTGRES_USER: ${DB_USER:-pgvector}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-password}
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "pg_isready -U ${DB_USER:-pgvector} -d ${POSTGRES_DB:-pgvector}",
+        ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
